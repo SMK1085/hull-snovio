@@ -12,8 +12,7 @@ module.exports = {
     env_production: {
       NODE_ENV: "production",
     },
-  }],
-  apps: [{
+  }, {
     name: "Hull Snov Worker",
     script: "dist/worker.js",
     instances: 1,
