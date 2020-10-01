@@ -1,0 +1,67 @@
+[{
+    "id": "OPERATION_SENDACCOUNTMESSAGES_COUNT",
+    "code": "11-001",
+    "component": "SyncAgent",
+    "metricKey": "SN-ACCOUNTUPDATE-MSG"
+  },
+  {
+    "id": "OPERATION_CONNECTORSTATUS_COUNT",
+    "code": "19-001",
+    "component": "SyncAgent",
+    "metricKey": "CONNECTORSTATUS-PING"
+  },
+  {
+    "id": "OPERATION_WORKER_TOTALQUEUES_COUNT",
+    "code": "30-001",
+    "component": "Worker",
+    "metricKey": "TOTALQUEUES-COUNT"
+  },
+  {
+    "id": "OPERATION_WORKER_JOBPROCESSINGSTART_COUNT",
+    "code": "30-002",
+    "component": "Worker",
+    "metricKey": "JOB-COUNT"
+  },
+  {
+    "id": "OPERATION_WORKER_JOBPROCESSINGSUCCESS_COUNT",
+    "code": "30-003",
+    "component": "Worker",
+    "metricKey": "JOB-COUNT"
+  },
+  {
+    "id": "OPERATION_WORKER_JOBPROCESSINGFAILURE_COUNT",
+    "code": "30-004",
+    "component": "Worker",
+    "metricKey": "JOB-COUNT"
+  },
+  {
+    "id": "OPERATION_WORKER_JOBCLEANINGCOMPLETED_COUNT",
+    "code": "30-005",
+    "component": "Worker",
+    "metricKey": "JOB-COUNT"
+  },
+  {
+    "id": "OPERATION_WORKER_JOBCLEANINGFAILED_COUNT",
+    "code": "30-006",
+    "component": "Worker",
+    "metricKey": "JOB-COUNT"
+  },
+  {
+    "id": "OPERATION_WORKER_JOBCLEANINGACTIVE_COUNT",
+    "code": "30-007",
+    "component": "Worker",
+    "metricKey": "JOB-COUNT"
+  },
+  {
+    "id": "OPERATION_WORKER_QUEUEJOBSREMAINING_COUNT",
+    "code": "30-008",
+    "component": "Worker",
+    "metricKey": "JOB-COUNT"
+  },
+  {
+    "id": "SERVICE_API_CALL",
+    "code": "80-001",
+    "component": "ServiceClient",
+    "metricKey": "SVC-APICALL"
+  }
+]

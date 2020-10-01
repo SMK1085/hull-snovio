@@ -1,0 +1,139 @@
+[{
+    "id": "OPERATION_SENDACCOUNTMESSAGES_START",
+    "code": "11-001",
+    "component": "SyncAgent",
+    "message": "Entered sending account messages..."
+  },
+  {
+    "id": "OPERATION_SENDACCOUNTMESSAGES_SUCCESS",
+    "code": "11-002",
+    "component": "SyncAgent",
+    "message": "Successfully sent account messages."
+  },
+  {
+    "id": "OPERATION_SENDACCOUNTMESSAGES_NOOP",
+    "code": "11-003",
+    "component": "SyncAgent",
+    "message": "Detected no-op for sending account messages. None of the messages satisfy the filtering criteria."
+  },
+  {
+    "id": "OPERATION_SENDACCOUNTMESSAGESBATCH_START",
+    "code": "11-005",
+    "component": "SyncAgent",
+    "message": "Entered sending account messages..."
+  },
+  {
+    "id": "OPERATION_SENDACCOUNTMESSAGES_JOBENQUEUED",
+    "code": "11-006",
+    "component": "SyncAgent",
+    "message": "Job enqueued in Bull."
+  },
+  {
+    "id": "OPERATION_SENDACCOUNTMESSAGES_JOBMAXLIMIT",
+    "code": "11-007",
+    "component": "SyncAgent",
+    "message": "Max number of jobs enqueued. All further jobs will be not processed."
+  },
+  {
+    "id": "OPERATION_CONNECTORSTATUS_START",
+    "code": "19-001",
+    "component": "SyncAgent",
+    "message": "Entered checking status of connector..."
+  },
+  {
+    "id": "OPERATION_CONNECTORSTATUS_SUCCESS",
+    "code": "19-002",
+    "component": "SyncAgent",
+    "message": "Successfully checked status of connect."
+  },
+  {
+    "id": "OPERATION_CONNECTORSTATUS_HULLAPISTART",
+    "code": "19-003",
+    "component": "SyncAgent",
+    "message": "Sending connector status to Hull API..."
+  },
+  {
+    "id": "OPERATION_CONNECTORSTATUS_HULLAPISUCCESS",
+    "code": "19-004",
+    "component": "SyncAgent",
+    "message": "Successfully sent connector status to Hull API."
+  },
+  {
+    "id": "OPERATION_WORKER_START",
+    "code": "30-001",
+    "component": "Worker",
+    "message": "Started worker..."
+  },
+  {
+    "id": "OPERATION_WORKER_LOOP_START",
+    "code": "30-002",
+    "component": "Worker",
+    "message": "Entered loop in worker..."
+  },
+  {
+    "id": "OPERATION_WORKER_QUEUE_START",
+    "code": "30-003",
+    "component": "Worker",
+    "message": "Started processing queue..."
+  },
+  {
+    "id": "OPERATION_WORKER_JOB_START",
+    "code": "30-004",
+    "component": "Worker",
+    "message": "Started processing job from queue..."
+  },
+  {
+    "id": "OPERATION_WORKER_API_START",
+    "code": "30-005",
+    "component": "Worker",
+    "message": "Calling GPSI API..."
+  },
+  {
+    "id": "OPERATION_WORKER_API_SUCCESS",
+    "code": "30-006",
+    "component": "Worker",
+    "message": "Successfully called GPSI API."
+  },
+  {
+    "id": "OPERATION_WORKER_API_FAILED",
+    "code": "30-007",
+    "component": "Worker",
+    "message": "Failed to call GPSI API."
+  },
+  {
+    "id": "OPERATION_WORKER_JOB_MOVECOMPLETED_START",
+    "code": "30-008",
+    "component": "Worker",
+    "message": "Started moving job to completed queue..."
+  },
+  {
+    "id": "OPERATION_WORKER_JOB_MOVECOMPLETED_SUCCESS",
+    "code": "30-009",
+    "component": "Worker",
+    "message": "Successfully moved job to completed queue."
+  },
+  {
+    "id": "OPERATION_WORKER_QUEUE_CLOSE_START",
+    "code": "30-010",
+    "component": "Worker",
+    "message": "Closing queue..."
+  },
+  {
+    "id": "OPERATION_WORKER_QUEUE_FINISH",
+    "code": "30-011",
+    "component": "Worker",
+    "message": "Finished processing queue."
+  },
+  {
+    "id": "OPERATION_WORKER_LOOP_FINISH",
+    "code": "30-012",
+    "component": "Worker",
+    "message": "Finished loop in worker."
+  },
+  {
+    "id": "OPERATION_MAPPING_MODULE_UNSUPPORTED",
+    "code": "40-001",
+    "component": "MappingUtil",
+    "message": "Unsupported module type."
+  }
+]

@@ -1,0 +1,269 @@
+{
+  "name": "Snov.io",
+  "description": "Enrichment and Prospection with Snov.io",
+  "source": "snov",
+  "logo": "logo.png",
+  "picture": "picture.png",
+  "version": "1.0.0",
+  "icons": [],
+  "tags": [
+    "outgoing",
+    "oneColumn",
+    "smart-notifier",
+    "batch"
+  ],
+  "settings": [],
+  "private_settings": [{
+      "name": "client_id",
+      "title": "Client ID",
+      "description": "The client id of the snov.io API. Obtain it from [https://app.snov.io/api-setting](https://app.snov.io/api-setting)",
+      "type": "string"
+    },
+    {
+      "name": "client_secret",
+      "title": "Client Secret",
+      "description": "The client secret of the snov.io API. Obtain it from [https://app.snov.io/api-setting](https://app.snov.io/api-setting)",
+      "type": "string"
+    },
+    {
+      "name": "enrichment_user_synchronized_segments",
+      "title": "Enrichment Filter",
+      "description": "Enrich Hull Users with Prospect Information when they are part of one of these segments.",
+      "type": "array",
+      "format": "segment",
+      "default": []
+    },
+    {
+      "name": "enrichment_user_lookup_socialurl",
+      "title": "Lookup Social Url",
+      "description": "Define the attribute on the Hull User profile which contains the LinkedIn or Twitter url.",
+      "type": "string",
+      "format": "trait"
+    },
+    {
+      "name": "enrichment_user_attributes_incoming",
+      "title": "Enrichment Mapping",
+      "description": "Define the enriched fields to store on the Hull User profile.",
+      "type": "array",
+      "format": "traitMapping",
+      "options": {
+        "direction": "incoming",
+        "showOverwriteToggle": true,
+        "placeholder": "Snov Field",
+        "allowCreate": true,
+        "loadOptions": "/meta/fields/enrichmentbyurl/incoming",
+        "source": "snov"
+      },
+      "default": [{
+          "hull": "traits_snov/id",
+          "overwrite": true,
+          "readOnly": true,
+          "service": "id"
+        },
+        {
+          "hull": "first_name",
+          "overwrite": false,
+          "readOnly": true,
+          "service": "firstName"
+        },
+        {
+          "hull": "last_name",
+          "overwrite": false,
+          "readOnly": true,
+          "service": "lastName"
+        },
+        {
+          "hull": "traits_snov/first_name",
+          "overwrite": true,
+          "readOnly": true,
+          "service": "firstName"
+        },
+        {
+          "hull": "traits_snov/last_name",
+          "overwrite": true,
+          "readOnly": true,
+          "service": "lastName"
+        },
+        {
+          "hull": "traits_snov/source_page",
+          "overwrite": true,
+          "service": "sourcePage"
+        },
+        {
+          "hull": "traits_snov/source",
+          "overwrite": true,
+          "service": "source"
+        },
+        {
+          "hull": "traits_snov/industry",
+          "overwrite": true,
+          "service": "industry"
+        },
+        {
+          "hull": "traits_snov/country",
+          "overwrite": true,
+          "service": "country"
+        },
+        {
+          "hull": "traits_snov/locality",
+          "overwrite": true,
+          "service": "locality"
+        },
+        {
+          "hull": "traits_snov/skills",
+          "overwrite": true,
+          "service": "skills"
+        },
+        {
+          "hull": "traits_snov/currentjob_companyname",
+          "overwrite": true,
+          "service": "currentJob[0].companyName"
+        },
+        {
+          "hull": "traits_snov/currentjob_position",
+          "overwrite": true,
+          "service": "currentJob[0].position"
+        },
+        {
+          "hull": "traits_snov/currentjob_sociallink",
+          "overwrite": true,
+          "service": "currentJob[0].socialLink"
+        },
+        {
+          "hull": "traits_snov/currentjob_website",
+          "overwrite": true,
+          "service": "currentJob[0].site"
+        },
+        {
+          "hull": "traits_snov/currentjob_locality",
+          "overwrite": true,
+          "service": "currentJob[0].locality"
+        },
+        {
+          "hull": "traits_snov/currentjob_state",
+          "overwrite": true,
+          "service": "currentJob[0].state"
+        },
+        {
+          "hull": "traits_snov/currentjob_city",
+          "overwrite": true,
+          "service": "currentJob[0].city"
+        },
+        {
+          "hull": "traits_snov/currentjob_street",
+          "overwrite": true,
+          "service": "currentJob[0].street"
+        },
+        {
+          "hull": "traits_snov/currentjob_postal",
+          "overwrite": true,
+          "service": "currentJob[0].postal"
+        },
+        {
+          "hull": "traits_snov/currentjob_founded",
+          "overwrite": true,
+          "service": "currentJob[0].founded"
+        },
+        {
+          "hull": "traits_snov/currentjob_start_date",
+          "overwrite": true,
+          "service": "currentJob[0].startDate"
+        },
+        {
+          "hull": "traits_snov/currentjob_end_date",
+          "overwrite": true,
+          "service": "currentJob[0].endDate"
+        },
+        {
+          "hull": "traits_snov/currentjob_companysize",
+          "overwrite": true,
+          "service": "currentJob[0].size"
+        },
+        {
+          "hull": "traits_snov/currentjob_industry",
+          "overwrite": true,
+          "service": "currentJob[0].industry"
+        },
+        {
+          "hull": "traits_snov/currentjob_companytype",
+          "overwrite": true,
+          "service": "currentJob[0].companyType"
+        },
+        {
+          "hull": "traits_snov/currentjob_country",
+          "overwrite": true,
+          "service": "currentJob[0].country"
+        },
+        {
+          "hull": "traits_snov/current_jobs",
+          "overwrite": true,
+          "service": "currentJob"
+        },
+        {
+          "hull": "traits_snov/previous_jobs",
+          "overwrite": true,
+          "service": "previousJob"
+        },
+        {
+          "hull": "traits_snov/social",
+          "overwrite": true,
+          "service": "social"
+        },
+        {
+          "hull": "traits_snov/emails",
+          "overwrite": true,
+          "service": "emails.email"
+        },
+        {
+          "hull": "traits_snov/emails_detailed",
+          "overwrite": true,
+          "service": "emails"
+        }
+      ]
+    }
+  ],
+  "deployment_settings": [],
+  "resources": [],
+  "readme": "readme.md",
+  "subscriptions": [{
+    "url": "/smart-notifier",
+    "conditions": {
+      "channels": {
+        "only": ["user:update"]
+      },
+      "segments": {
+        "user:update": [
+          "private_settings.enrichment_user_synchronized_segments"
+        ]
+      }
+    },
+    "channels": [{
+      "channel": "user:update",
+      "handler": "user_update"
+    }]
+  }],
+  "schedules": [{
+    "url": "/status",
+    "type": "interval",
+    "value": "30"
+  }],
+  "json": [],
+  "settings_sections": [{
+      "title": "Authentication",
+      "description": "Configure the parameters to authorize the Snov.io API.",
+      "properties": [
+        "private_settings.client_id",
+        "private_settings.client_secret"
+      ]
+    },
+    {
+      "title": "Enrichment",
+      "description": "Configure the parameters to enrich users by social url via the Snov.io API.",
+      "properties": [
+        "private_settings.enrichment_user_synchronized_segments",
+        "private_settings.enrichment_user_lookup_socialurl",
+        "private_settings.enrichment_user_attributes_incoming"
+      ]
+    }
+  ]
+}
