@@ -3,9 +3,8 @@ import { AwilixContainer } from "awilix";
 import { SyncAgent } from "../core/sync-agent";
 import { cloneDeep } from "lodash";
 import { Logger } from "winston";
-import { FieldsSchema } from "../types/fields-schema";
 
-export const metaActionFactory = (): RequestHandler => {
+export const fetchActionFactory = (): RequestHandler => {
   return async (req: Request, res: Response): Promise<unknown> => {
     let logger: Logger | undefined;
     let correlationKey: string | undefined;
@@ -14,28 +13,8 @@ export const metaActionFactory = (): RequestHandler => {
       logger = scope.resolve<Logger>("logger");
       correlationKey = scope.resolve<string>("correlationKey");
       const syncAgent = new SyncAgent(scope);
-      const metaCategory = req.params.category as string;
-      let responsePayload: FieldsSchema = {
-        error: null,
-        ok: true,
-        options: [],
-      };
-      switch (metaCategory) {
-        case "fields":
-          responsePayload = await syncAgent.listMetadata(
-            req.params.objectType,
-            req.params.direction,
-          );
-          break;
-        case "lists":
-          responsePayload = await syncAgent.listMetadataProspectLists();
-          break;
-        default:
-          responsePayload.error = `Unknown category '${metaCategory}'.`;
-          responsePayload.ok = false;
-          break;
-      }
-      res.status(200).json(responsePayload);
+      res.status(200).json({ ok: true });
+      await syncAgent.fetchProspectLists();
       return Promise.resolve(true);
     } catch (error) {
       if (logger) {

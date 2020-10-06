@@ -5,6 +5,6 @@ export interface FieldsSchema {
 }
 
 interface FieldsSchemaOption {
-  value: string;
+  value: string | number;
   label: string;
 }

@@ -11,6 +11,12 @@
     "message": "Failed to process account messages due to an unhandled error."
   },
   {
+    "id": "OPERATION_FETCHPROSPECTLISTS_UNHANDLED",
+    "code": "15-001",
+    "component": "SyncAgent",
+    "message": "Failed to fetch prospect lists data due to an unhandled error."
+  },
+  {
     "id": "OPERATION_CONNECTORSTATUS_UNHANDLED",
     "code": "19-001",
     "component": "SyncAgent",

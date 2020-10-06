@@ -148,6 +148,61 @@ export interface SnovFindProspectbyUrlMessage {
   lookupUrl: string;
 }
 
+export interface SnovDateObject {
+  date: string;
+  timezone_type: number;
+  timezone: string;
+}
+
+export interface SnovList {
+  id: number;
+  name: string;
+  contacts: number;
+  isDeleted: boolean;
+  creationDate: SnovDateObject;
+  deletionDate: null | SnovDateObject;
+}
+
+export interface SnovProspectListRequestParams {
+  listId: number;
+  page?: number;
+  perPage?: number; // Max is 100
+}
+
+export interface SnovProspectListResponse {
+  success: boolean;
+  message?: string;
+  list?: {
+    name: string;
+    contacts: number;
+    creationDate: SnovDateObject;
+    emailsCount: any[];
+  };
+  prospects: SnovProspectListProspect[];
+}
+
+export interface SnovProspectListProspect {
+  id: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  emails: SnovProspectListProspectEmailDetails[];
+}
+
+export interface SnovProspectListProspectEmailDetails {
+  email: string;
+  probability: string;
+  isVerified: null | number;
+  jobStatus: string;
+  domainType: string;
+  isValidFormat: string | null;
+  isDisposable: string | null;
+  isWebmail: string | null;
+  isGibberish: string | null;
+  smtpStatus: string | null;
+  emailVerifyText: string | null;
+}
+
 export const META_FIELDS_PROSPECTINFO = [
   {
     label: "ID",
@@ -264,5 +319,51 @@ export const META_FIELDS_PROSPECTINFO = [
   {
     label: "Emails Detailed",
     value: "emails",
+  },
+];
+
+export const META_FIELDS_PROSPECTLISTS = [
+  {
+    label: "ID",
+    value: "id",
+  },
+  {
+    label: "First Name",
+    value: "firstName",
+  },
+  {
+    label: "Last Name",
+    value: "lastName",
+  },
+  {
+    label: "Prospection Source",
+    value: "sourcePage",
+  },
+  {
+    label: "Emails",
+    value: "emails.email",
+  },
+  {
+    label: "Emails Detailed",
+    value: "emails",
+  },
+];
+
+export const META_STRATEGIES_PROSPECTLISTS = [
+  {
+    label: "Highest Probability",
+    value: "HIGHEST_PROBABILITY_OVERALL",
+  },
+  {
+    label: "Highest Probability with Company Domain",
+    value: "HIGHEST_PROBABILITY_COMPANY",
+  },
+  {
+    label: "Highest Probability with Verified Domain",
+    value: "HIGHEST_PROBABILITY_VERIFIED_OVERALL",
+  },
+  {
+    label: "Highest Probability with Verified Company Domain",
+    value: "HIGHEST_PROBABILITY_VERIFIED_COMPANY",
   },
 ];

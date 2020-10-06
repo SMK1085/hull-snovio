@@ -9,6 +9,9 @@ import {
   SnovDomainSearchV2Response,
   SnovFindProspectbyUrlRequestParams,
   SnovGetProspectWithUrlResponse,
+  SnovList,
+  SnovProspectListRequestParams,
+  SnovProspectListResponse,
 } from "../core/service-objects";
 import { ApiUtil } from "../utils/api-util";
 import qs from "qs";
@@ -119,6 +122,52 @@ export class ServiceClient {
 
     try {
       const response = await axios.get<SnovDomainSearchV2Response>(url);
+      return ApiUtil.handleApiResultSuccess(url, method, params, response.data);
+    } catch (error) {
+      return ApiUtil.handleApiResultError(url, method, params, error);
+    }
+  }
+
+  public async getUserLists(): Promise<
+    ApiResultObject<undefined, SnovList[], AxiosError>
+  > {
+    const queryString = qs.stringify({
+      access_token: this.appSettings.access_token,
+    });
+    const url = `https://api.snov.io/v1/get-user-lists?${queryString}`;
+    const method: ApiMethod = "get";
+
+    try {
+      const response = await axios.get<SnovList[]>(url);
+      return ApiUtil.handleApiResultSuccess(
+        url,
+        method,
+        undefined,
+        response.data,
+      );
+    } catch (error) {
+      return ApiUtil.handleApiResultError(url, method, undefined, error);
+    }
+  }
+
+  public async getProspectsInList(
+    params: SnovProspectListRequestParams,
+  ): Promise<
+    ApiResultObject<
+      SnovProspectListRequestParams,
+      SnovProspectListResponse,
+      AxiosError
+    >
+  > {
+    const url = `https://api.snov.io/v1/prospect-list`;
+    const method: ApiMethod = "post";
+    const payload = {
+      ...params,
+      access_token: this.appSettings.access_token,
+    };
+
+    try {
+      const response = await axios.post<SnovProspectListResponse>(url, payload);
       return ApiUtil.handleApiResultSuccess(url, method, params, response.data);
     } catch (error) {
       return ApiUtil.handleApiResultError(url, method, params, error);

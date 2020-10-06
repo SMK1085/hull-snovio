@@ -158,6 +158,7 @@ export const server = (app: Application): Application => {
 
   // CORS enabled endpoints
   app.use("/meta/:category/:objectType/:direction", cors(), actions.meta());
+  app.use("/fetch/prospectlists", cors(), actions.fetch());
 
   // Dispose the container when the server closes
   app.on("close", () => {

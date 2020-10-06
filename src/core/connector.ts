@@ -12,6 +12,9 @@ export interface PrivateSettings {
   token_type?: string | null;
   expires_in?: number | null;
   expires_at?: string | null;
+  prospectionlists_synchronizedis?: string[];
+  prospectionlists_user_attributes_incoming: HullConnectorAttributeMapping[];
+  prospectionlists_emailstrategy?: string | null;
 }
 
 export interface LogPayload {

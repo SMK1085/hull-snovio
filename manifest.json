@@ -220,6 +220,96 @@
           "service": "emails"
         }
       ]
+    },
+    {
+      "name": "prospectionlists_synchronizedis",
+      "title": "Synchronized Lists",
+      "type": "array",
+      "format": "select",
+      "uniqueItems": true,
+      "default": [],
+      "items": {
+        "type": "string",
+        "format": "select",
+        "options": {
+          "loadOptions": "/meta/lists/prospect/incoming"
+        }
+      }
+    },
+    {
+      "name": "prospectionlists_user_attributes_incoming",
+      "title": "Prospection Mapping",
+      "description": "Define the prospected fields to store on the Hull User profile.",
+      "type": "array",
+      "format": "traitMapping",
+      "options": {
+        "direction": "incoming",
+        "showOverwriteToggle": true,
+        "placeholder": "Snov Field",
+        "allowCreate": true,
+        "loadOptions": "/meta/fields/prospectionlists/incoming",
+        "source": "snov"
+      },
+      "default": [{
+          "hull": "traits_snov/id",
+          "overwrite": true,
+          "readOnly": true,
+          "service": "id"
+        },
+        {
+          "hull": "first_name",
+          "overwrite": false,
+          "readOnly": true,
+          "service": "firstName"
+        },
+        {
+          "hull": "last_name",
+          "overwrite": false,
+          "readOnly": true,
+          "service": "lastName"
+        },
+        {
+          "hull": "traits_snov/first_name",
+          "overwrite": true,
+          "readOnly": true,
+          "service": "firstName"
+        },
+        {
+          "hull": "traits_snov/last_name",
+          "overwrite": true,
+          "readOnly": true,
+          "service": "lastName"
+        },
+        {
+          "hull": "traits_snov/prospect_source",
+          "overwrite": true,
+          "readOnly": true,
+          "service": "source"
+        },
+        {
+          "hull": "traits_snov/prospect_emails_detailed",
+          "overwrite": true,
+          "service": "emails"
+        },
+        {
+          "hull": "traits_snov/emails",
+          "overwrite": true,
+          "service": "emails.email"
+        }
+      ]
+    },
+    {
+      "name": "prospectionlists_emailstrategy",
+      "title": "Primary Email Strategy",
+      "description": "A Prospect can have multiple emails returned from snov.io. You can select the strategy to determine the primary email. If by that strategy no email is found, the first email will be taken.",
+      "type": "string",
+      "format": "select",
+      "options": {
+        "allowCreate": false,
+        "loadOptions": "/meta/fields/prospectionemailstrategy/incoming",
+        "placeholder": "Strategy"
+      },
+      "default": "HIGHEST_PROBABILITY_VERIFIED_COMPANY"
     }
   ],
   "deployment_settings": [],
@@ -246,8 +336,27 @@
     "url": "/status",
     "type": "interval",
     "value": "30"
+  }, {
+    "url": "/fetch/prospectlists",
+    "type": "interval",
+    "value": "180"
   }],
-  "json": [],
+  "json": [{
+    "title": "Fetch Prospect Lists",
+    "name": "fetch_prospectlists",
+    "format": "button",
+    "url": "/fetch/prospectlists",
+    "handler": "fetchProspectLists",
+    "options": {
+      "fireAndForget": true,
+      "confirm": {
+        "action": "fetch",
+        "text": "You are about to pull all Prospects from your Snov.io Prospect Lists into Hull. Please make sure you've configured your user identity properly, and that you have the attributes you'd like to fetch configured. Be careful when clicking this multiple times, it can result in long operations. Check out the \"Logs\" tab to track `incoming.user.success` messages as users are ingested.",
+        "button": "Start Fetching Lists",
+        "entity": "users"
+      }
+    }
+  }],
   "settings_sections": [{
       "title": "Authentication",
       "description": "Configure the parameters to authorize the Snov.io API.",
@@ -263,6 +372,16 @@
         "private_settings.enrichment_user_synchronized_segments",
         "private_settings.enrichment_user_lookup_socialurl",
         "private_settings.enrichment_user_attributes_incoming"
+      ]
+    },
+    {
+      "title": "Prospect Lists",
+      "description": "Configure the parameters to fetch Prospects from Lists via the Snov.io API.",
+      "properties": [
+        "private_settings.prospectionlists_synchronizedis",
+        "private_settings.prospectionlists_user_attributes_incoming",
+        "private_settings.prospectionlists_emailstrategy",
+        "json.fetch_prospectlists"
       ]
     }
   ]

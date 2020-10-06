@@ -7,7 +7,7 @@ import { ConnectorStatusResponse } from "../types/connector-status";
 import { Logger } from "winston";
 import { PrivateSettings } from "./connector";
 import IHullClient from "../types/hull-client";
-import { isNil, cloneDeep } from "lodash";
+import { isNil, cloneDeep, pickBy, identity } from "lodash";
 import {
   STATUS_SETUPREQUIRED_NOCLIENTID,
   ERROR_UNHANDLED_GENERIC,
@@ -20,11 +20,16 @@ import { FieldsSchema } from "../types/fields-schema";
 import IHullUserUpdateMessage from "../types/user-update-message";
 import {
   META_FIELDS_PROSPECTINFO,
+  META_FIELDS_PROSPECTLISTS,
+  META_STRATEGIES_PROSPECTLISTS,
   OutgoingOperationEnvelope,
   SnovFindProspectbyUrlMessage,
   SnovFindProspectbyUrlRequestParams,
+  SnovList,
+  SnovProspectListProspect,
 } from "./service-objects";
 import { AmqpUtil } from "../utils/amqp-util";
+import { CachingUtil } from "../utils/caching-util";
 
 export class SyncAgent {
   public readonly diContainer: AwilixContainer;
@@ -218,7 +223,7 @@ export class SyncAgent {
   }
 
   /**
-   * Returns the fields schema for attribute mapping purposes.
+   * Returns the fields schema for attribute configuration purposes.
    * @param objectType The arbitrary object type. Allowed values are `enrichmentbyurl`.
    * @param direction The direction. Allowed values are `incoming` or `outgoing`.
    * @returns {Promise<FieldsSchema>} The fields schema.
@@ -238,6 +243,12 @@ export class SyncAgent {
       case "enrichmentbyurl":
         fieldSchema.options.push(...META_FIELDS_PROSPECTINFO);
         break;
+      case "prospectionlists":
+        fieldSchema.options.push(...META_FIELDS_PROSPECTLISTS);
+        break;
+      case "prospectionemailstrategy":
+        fieldSchema.options.push(...META_STRATEGIES_PROSPECTLISTS);
+        break;
       default:
         fieldSchema.error = `Unsupported object type '${objectType}'.`;
         fieldSchema.ok = false;
@@ -245,6 +256,202 @@ export class SyncAgent {
     }
 
     return fieldSchema;
+  }
+
+  /**
+   * Returns the fields schema for prospect lists.
+   * @returns {Promise<FieldsSchema>} The fields schema.
+   * @memberof SyncAgent
+   */
+  public async listMetadataProspectLists(): Promise<FieldsSchema> {
+    const fieldSchema: FieldsSchema = {
+      error: null,
+      ok: true,
+      options: [],
+    };
+
+    const cachingUtil = this.diContainer.resolve<CachingUtil>("cachingUtil");
+    const connectorId = this.diContainer.resolve<string>("hullAppId");
+    const appSettings = this.diContainer.resolve<PrivateSettings>(
+      "hullAppSettings",
+    );
+    const redisClient = this.diContainer.resolve<ConnectorRedisClient>(
+      "redisClient",
+    );
+    let serviceClient = this.diContainer.resolve<ServiceClient>(
+      "serviceClient",
+    );
+
+    const cachedToken = await redisClient.get<{ access_token: string }>(
+      `${connectorId}_accesstoken`,
+    );
+    if (isNil(cachedToken)) {
+      const responseToken = await serviceClient.generateAccessToken();
+      if (responseToken.success) {
+        await redisClient.set(
+          `${connectorId}_accesstoken`,
+          { access_token: responseToken.data!.access_token },
+          responseToken.data!.expires_in - 30,
+        );
+        appSettings.access_token = responseToken.data!.access_token;
+      } else {
+        console.error(responseToken.errorDetails);
+        throw new Error(`Couldn't retrieve access_token...`);
+      }
+    } else {
+      // We have a cached token, so use it
+      appSettings.access_token = cachedToken.access_token;
+    }
+
+    // Make sure we have an authenticated ServiceClient
+    serviceClient = new ServiceClient({
+      hullAppSettings: appSettings,
+    });
+
+    const respLists = await cachingUtil.getCachedApiResponse(
+      `${connectorId}_prospect_lists`,
+      () => serviceClient.getUserLists(),
+      5 * 60,
+    );
+
+    if (respLists.success) {
+      fieldSchema.options = respLists.data!.map((l: SnovList) => {
+        return {
+          label: `${l.name} (${l.contacts} ${
+            l.contacts === 1 ? "contact" : "contacts"
+          })`,
+          value: `${l.id}`,
+        };
+      });
+    } else {
+      fieldSchema.ok = false;
+      fieldSchema.error = respLists.error as string;
+    }
+
+    return fieldSchema;
+  }
+
+  public async fetchProspectLists(): Promise<void> {
+    const logger = this.diContainer.resolve<Logger>("logger");
+    const loggingUtil = this.diContainer.resolve<LoggingUtil>("loggingUtil");
+    const correlationKey = this.diContainer.resolve<string>("correlationKey");
+    const connectorId = this.diContainer.resolve<string>("hullAppId");
+    const appSettings = this.diContainer.resolve<PrivateSettings>(
+      "hullAppSettings",
+    );
+    const redisClient = this.diContainer.resolve<ConnectorRedisClient>(
+      "redisClient",
+    );
+
+    const lockKey = `${connectorId}_lock_prospectlists`;
+    const lock = await redisClient.get<{ timestamp: string }>(lockKey);
+    if (!isNil(lock)) {
+      // TODO: Add logging
+      return;
+    }
+
+    if (
+      isNil(appSettings.prospectionlists_synchronizedis) ||
+      appSettings.prospectionlists_synchronizedis.length === 0
+    ) {
+      // TODO: Add logging
+      return;
+    }
+
+    try {
+      let serviceClient = this.diContainer.resolve<ServiceClient>(
+        "serviceClient",
+      );
+      const cachedToken = await redisClient.get<{ access_token: string }>(
+        `${connectorId}_accesstoken`,
+      );
+      if (isNil(cachedToken)) {
+        const responseToken = await serviceClient.generateAccessToken();
+        if (responseToken.success) {
+          await redisClient.set(
+            `${connectorId}_accesstoken`,
+            { access_token: responseToken.data!.access_token },
+            responseToken.data!.expires_in - 30,
+          );
+          appSettings.access_token = responseToken.data!.access_token;
+        } else {
+          console.error(responseToken.errorDetails);
+          throw new Error(`Couldn't retrieve access_token...`);
+        }
+      } else {
+        // We have a cached token, so use it
+        appSettings.access_token = cachedToken.access_token;
+      }
+
+      // Make sure we have an authenticated ServiceClient
+      serviceClient = new ServiceClient({
+        hullAppSettings: appSettings,
+      });
+
+      const mappingUtil = this.diContainer.resolve<MappingUtil>("mappingUtil");
+      const hullClient = this.diContainer.resolve<IHullClient>("hullClient");
+
+      await asyncForEach(
+        appSettings.prospectionlists_synchronizedis,
+        async (listId: string) => {
+          let page = 0;
+          const perPage = 100;
+          let hasMore = true;
+          while (hasMore === true) {
+            page += 1;
+            const responseProspects = await serviceClient.getProspectsInList({
+              listId: parseInt(listId, 10),
+              page,
+              perPage,
+            });
+
+            if (responseProspects.success && responseProspects.data) {
+              if (responseProspects.data.success === false) {
+                // TODO: Add logging
+                hasMore = false;
+              } else {
+                // Import all prospects
+                const listName = responseProspects.data.list!.name;
+                hasMore =
+                  responseProspects.data.list!.contacts > page * perPage;
+                await asyncForEach(
+                  responseProspects.data.prospects,
+                  async (prospect: SnovProspectListProspect) => {
+                    const userIdent = pickBy(
+                      {
+                        anonymous_id: `snov:${prospect.id}`,
+                        email: mappingUtil.mapUserPrimaryEmailProspectionList(
+                          prospect,
+                        ),
+                      },
+                      identity,
+                    );
+                    const attribs = mappingUtil.mapUserProspectionListResultToHullUserAttributes(
+                      prospect,
+                      listName,
+                    );
+                    await hullClient.asUser(userIdent).traits(attribs);
+                  },
+                );
+              }
+            } else {
+              // TODO: Add logging
+              hasMore = false;
+            }
+          }
+        },
+      );
+    } catch (error) {
+      logger.error(
+        loggingUtil.composeErrorMessage(
+          "OPERATION_FETCHPROSPECTLISTS_UNHANDLED",
+          error,
+          correlationKey,
+        ),
+      );
+    } finally {
+      await redisClient.delete(lockKey);
+    }
   }
 
   /**
