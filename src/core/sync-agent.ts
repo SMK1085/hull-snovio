@@ -431,6 +431,19 @@ export class SyncAgent {
                       listName,
                     );
                     await hullClient.asUser(userIdent).traits(attribs);
+                    const prospectDetailResponse = await serviceClient.getProspectById(
+                      { id: prospect.id },
+                    );
+                    if (
+                      prospectDetailResponse.success &&
+                      prospectDetailResponse.data &&
+                      prospectDetailResponse.data.success === true
+                    ) {
+                      const profileAttribs = mappingUtil.mapUserEnrichResultToHullUserAttributes(
+                        prospectDetailResponse.data.data as any,
+                      );
+                      await hullClient.asUser(userIdent).traits(profileAttribs);
+                    }
                   },
                 );
               }

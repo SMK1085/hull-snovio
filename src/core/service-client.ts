@@ -12,6 +12,7 @@ import {
   SnovList,
   SnovProspectListRequestParams,
   SnovProspectListResponse,
+  SnovGetProspectByIdRequestParams,
 } from "../core/service-objects";
 import { ApiUtil } from "../utils/api-util";
 import qs from "qs";
@@ -168,6 +169,33 @@ export class ServiceClient {
 
     try {
       const response = await axios.post<SnovProspectListResponse>(url, payload);
+      return ApiUtil.handleApiResultSuccess(url, method, params, response.data);
+    } catch (error) {
+      return ApiUtil.handleApiResultError(url, method, params, error);
+    }
+  }
+
+  public async getProspectById(
+    params: SnovGetProspectByIdRequestParams,
+  ): Promise<
+    ApiResultObject<
+      SnovGetProspectByIdRequestParams,
+      SnovGetProspectWithUrlResponse,
+      AxiosError
+    >
+  > {
+    const url = `https://api.snov.io/v1/get-prospect-by-id`;
+    const method: ApiMethod = "post";
+    const payload = {
+      ...params,
+      access_token: this.appSettings.access_token,
+    };
+
+    try {
+      const response = await axios.post<SnovGetProspectWithUrlResponse>(
+        url,
+        payload,
+      );
       return ApiUtil.handleApiResultSuccess(url, method, params, response.data);
     } catch (error) {
       return ApiUtil.handleApiResultError(url, method, params, error);

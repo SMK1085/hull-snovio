@@ -203,6 +203,10 @@ export interface SnovProspectListProspectEmailDetails {
   emailVerifyText: string | null;
 }
 
+export interface SnovGetProspectByIdRequestParams {
+  id: string;
+}
+
 export const META_FIELDS_PROSPECTINFO = [
   {
     label: "ID",
