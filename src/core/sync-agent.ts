@@ -419,7 +419,9 @@ export class SyncAgent {
                   async (prospect: SnovProspectListProspect) => {
                     const userIdent = pickBy(
                       {
-                        anonymous_id: `snov:${prospect.id}`,
+                        anonymous_id: `snov:${mappingUtil.hashProspectName(
+                          prospect,
+                        )}`,
                         email: mappingUtil.mapUserPrimaryEmailProspectionList(
                           prospect,
                         ),

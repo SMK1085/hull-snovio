@@ -12,6 +12,7 @@ import { HullConnectorAttributeMapping } from "../types/hull-connector";
 import { IHullUserAttributes } from "../types/user";
 import normalizeUrl from "normalize-url";
 import { AxiosError } from "axios";
+import { createHash } from "crypto";
 
 const ATTRIBUTE_GROUP = "snov";
 
@@ -222,6 +223,10 @@ export class MappingUtil {
     }
 
     return first(filteredEmails)!.email;
+  }
+
+  public hashProspectName(prospectData: SnovProspectListProspect): string {
+    return createHash("md5").update(prospectData.name).digest("hex");
   }
 
   public static sanitizeLinkedInUrl(raw: string): string {
