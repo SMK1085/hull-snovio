@@ -105,3 +105,5 @@ dist
 
 # Build Types
 build-types
+.idea
+hull-snovio.iml

@@ -36,7 +36,7 @@ You can always fetch lists manually by clicking on the **Fetch Prospect Lists** 
 
 ## Roadmap
 
-The following table describes the current roadmap. If you like to request additions, please use the [GitHub Issues Page](https://github.com/SMK1085/hull-snovio/issues).
+The following table describes the current roadmap. If you like to request additions, please use the [GitHub Issues Page](https://github.com/hull/hull-snovio/issues).
 
 | Priority | Estimated Delivery Date | Feature Description          |
 | -------- | ----------------------- | ---------------------------- |
